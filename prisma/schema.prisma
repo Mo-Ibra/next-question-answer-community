@@ -11,16 +11,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String     @unique
   emailVerified DateTime?
   password      String?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  questions     Question[] @relation("QuestionAuthor")
+  answers       Answer[]   @relation("AnswerAuthor")
+  votes         Vote[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Account {
@@ -66,4 +69,51 @@ model EmailVerificationToken {
   createdAt DateTime @default(now())
 
   @@unique([email, token])
+}
+
+model Question {
+  id        String    @id @default(cuid())
+  title     String
+  content   String    @db.Text
+  userId    String
+  user      User      @relation("QuestionAuthor", fields: [userId], references: [id], onDelete: Cascade)
+  answers   Answer[]
+  votes     Vote[]    @relation("QuestionVotes")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Answer {
+  id         String    @id @default(cuid())
+  content    String    @db.Text
+  userId     String
+  questionId String
+  user       User      @relation("AnswerAuthor", fields: [userId], references: [id], onDelete: Cascade)
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  votes      Vote[]    @relation("AnswerVotes")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([questionId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Vote {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId   String?
+  question     Question? @relation("QuestionVotes", fields: [questionId], references: [id], onDelete: Cascade)
+  answerId     String?
+  answer       Answer?   @relation("AnswerVotes", fields: [answerId], references: [id], onDelete: Cascade)
+  value        Int       @default(1) // 1 for upvote, -1 for downvote
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, questionId, answerId])
+  @@index([userId])
 }

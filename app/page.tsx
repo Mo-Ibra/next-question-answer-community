@@ -22,10 +22,15 @@ export default async function Home() {
                 <p className="text-sm text-muted-foreground">Logged in as:</p>
                 <p className="font-medium">{session.user.email}</p>
               </div>
-              <div className="flex gap-2">
-                <Link href="/dashboard" className="flex-1">
+              <div className="flex flex-col gap-2">
+                <Link href="/dashboard" className="w-full">
                   <Button variant="default" className="w-full">
                     Go to Dashboard
+                  </Button>
+                </Link>
+                <Link href="/qa" className="w-full">
+                  <Button variant="outline" className="w-full">
+                    Q&A Community
                   </Button>
                 </Link>
               </div>
@@ -35,15 +40,20 @@ export default async function Home() {
               <p className="text-sm text-muted-foreground text-center">
                 Sign in or create an account to get started
               </p>
-              <div className="flex gap-2">
-                <Link href="/login" className="flex-1">
+              <div className="flex gap-2 flex-col">
+                <Link href="/login" className="w-full">
                   <Button variant="default" className="w-full">
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/signup" className="flex-1">
+                <Link href="/signup" className="w-full">
                   <Button variant="outline" className="w-full">
                     Sign Up
+                  </Button>
+                </Link>
+                <Link href="/qa" className="w-full">
+                  <Button variant="secondary" className="w-full">
+                    Browse Q&A (Public)
                   </Button>
                 </Link>
               </div>
