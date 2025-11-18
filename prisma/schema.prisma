@@ -22,6 +22,10 @@ model User {
   questions     Question[] @relation("QuestionAuthor")
   answers       Answer[]   @relation("AnswerAuthor")
   votes         Vote[]
+
+  followers     Follow[]   @relation("UserFollowing")
+  following     Follow[]   @relation("UserFollowers")
+
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -117,4 +121,20 @@ model Vote {
   @@unique([userId, questionId])
   @@unique([userId, answerId])
   @@index([userId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  
+  followerId  String
+  followingId String
+
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }

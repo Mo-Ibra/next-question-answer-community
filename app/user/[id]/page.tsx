@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Navbar from "@/components/navbar";
+import { auth } from "@/auth";
+import FollowButton from "@/components/follow-button";
 
 export default async function UserProfilePage({
   params,
@@ -17,8 +19,27 @@ export default async function UserProfilePage({
       email: true,
       image: true,
       createdAt: true,
+      followers: true,
+      following: true,
     },
   });
+
+  const session = await auth();
+  const currentUserId = session?.user?.id;
+
+  // check if current user follows this profile
+  const isFollowing = currentUserId
+    ? await prisma.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: currentUserId,
+            followingId: id,
+          },
+        },
+      })
+    : null;
+
+  console.log(isFollowing);
 
   if (!user) {
     return (
@@ -51,6 +72,20 @@ export default async function UserProfilePage({
                 className="rounded-full"
               />
             </div>
+          )}
+
+          {/* Followers Count */}
+          <div className="flex gap-4">
+            <p>
+              <strong>{user.followers.length}</strong> Followers
+            </p>
+            <p>
+              <strong>{user.following.length}</strong> Following
+            </p>
+          </div>
+
+          {currentUserId && currentUserId !== user.id && (
+            <FollowButton userId={user.id} isFollowingInitial={!!isFollowing} />
           )}
 
           {/* Email */}

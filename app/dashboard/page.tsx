@@ -21,7 +21,11 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email! },
-    select: { emailVerified: true },
+    select: {
+      emailVerified: true,
+      followers: true,
+      following: true,
+    },
   });
 
   const account = await prisma.account.findFirst({
@@ -38,6 +42,7 @@ export default async function DashboardPage() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid gap-6">
+          {/* Main Profile Info */}
           <Card>
             <CardHeader>
               <CardTitle>Welcome</CardTitle>
@@ -77,6 +82,28 @@ export default async function DashboardPage() {
                   <p className="text-green-600 font-medium">✓ Verified</p>
                 </div>
               )}
+            </CardContent>
+          </Card>
+          {/* Followers / Following */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Social Stats</CardTitle>
+              <CardDescription>
+                Your social activity on the platform.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-10 text-center">
+              {/* Followers */}
+              <div>
+                <p className="text-3xl font-bold">{user?.followers.length}</p>
+                <p className="text-muted-foreground">Followers</p>
+              </div>
+
+              {/* Following */}
+              <div>
+                <p className="text-3xl font-bold">{user?.following.length}</p>
+                <p className="text-muted-foreground">Following</p>
+              </div>
             </CardContent>
           </Card>
         </div>
