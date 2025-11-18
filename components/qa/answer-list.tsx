@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VoteButton } from "./vote-button";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 interface Answer {
   id: string;
@@ -82,7 +83,9 @@ export function AnswerList({ questionId, onRefreshNeeded }: AnswerListProps) {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">
-                  {answer.user.name || answer.user.email}
+                  <Link href={`/user/${answer.user.id}`}>
+                    {answer.user.name || answer.user.email}
+                  </Link>
                 </CardTitle>
               </div>
             </CardHeader>

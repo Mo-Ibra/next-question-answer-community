@@ -85,7 +85,7 @@ export function QuestionDetail({ questionId }: { questionId: string }) {
           />
           <div className="text-sm text-muted-foreground">
             Asked by{" "}
-            <strong>{question.user.name || question.user.email}</strong>
+            <a href={`/user/${question.user.id}`}>{question.user.name || question.user.email}</a>
           </div>
         </div>
       </CardContent>
