@@ -12,7 +12,7 @@ export default async function AskPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen flex justify-center items-center bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <Link href="/qa">
