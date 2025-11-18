@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,10 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface AnswerFormProps {
   questionId: string;
+  onAnswerAdded?: () => void;
 }
 
-export function AnswerForm({ questionId }: AnswerFormProps) {
-  const router = useRouter();
+export function AnswerForm({ questionId, onAnswerAdded }: AnswerFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [content, setContent] = useState("");
@@ -34,7 +33,11 @@ export function AnswerForm({ questionId }: AnswerFormProps) {
       }
 
       setContent("");
-      router.refresh();
+      
+      // Call the callback to refresh the answer list
+      if (onAnswerAdded) {
+        onAnswerAdded();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

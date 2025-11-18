@@ -13,27 +13,38 @@ interface Answer {
   createdAt: string
 }
 
-export function AnswerList({ questionId }: { questionId: string }) {
+interface AnswerListProps {
+  questionId: string
+  onRefreshNeeded?: (callback: () => void) => void
+}
+
+export function AnswerList({ questionId, onRefreshNeeded }: AnswerListProps) {
   const [answers, setAnswers] = useState<Answer[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchAnswers = async () => {
-      try {
-        const res = await fetch(`/api/questions/${questionId}`)
-        if (res.ok) {
-          const data = await res.json()
-          setAnswers(data.answers || [])
-        }
-      } catch (error) {
-        console.error("Failed to fetch answers:", error)
-      } finally {
-        setLoading(false)
+  const fetchAnswers = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/questions/${questionId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setAnswers(data.answers || [])
       }
+    } catch (error) {
+      console.error("Failed to fetch answers:", error)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchAnswers()
-  }, [questionId])
+    
+    // Register the refresh function with parent once
+    if (onRefreshNeeded) {
+      onRefreshNeeded(fetchAnswers)
+    }
+  }, [questionId]) // Only depend on questionId
 
   if (loading) {
     return <div className="text-center py-8">Loading answers...</div>

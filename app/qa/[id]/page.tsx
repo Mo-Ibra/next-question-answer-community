@@ -1,9 +1,7 @@
 import Link from "next/link"
 import { auth } from "@/auth"
 import { Button } from "@/components/ui/button"
-import { QuestionDetail } from "@/components/qa/question-detail"
-import { AnswerList } from "@/components/qa/answer-list"
-import { AnswerForm } from "@/components/qa/answer-form"
+import { QuestionPageClient } from "@/components/qa/question-page-client";
 
 export default async function QuestionPage({
   params,
@@ -22,18 +20,10 @@ export default async function QuestionPage({
           </Button>
         </Link>
 
-        <div className="max-w-3xl mx-auto space-y-8">
-          <QuestionDetail questionId={id} />
-          <AnswerList questionId={id} />
-
-          {session?.user?.id ? (
-            <AnswerForm questionId={id} />
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              Sign in to answer this question
-            </div>
-          )}
-        </div>
+        <QuestionPageClient
+          questionId={id}
+          userId={session?.user?.id}
+        />
       </div>
     </main>
   )
