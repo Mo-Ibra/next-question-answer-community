@@ -9,7 +9,9 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    
+    const session = await auth()
+    const userId = session?.user?.id
+
     const question = await prisma.question.findUnique({
       where: { id },
       include: {
@@ -21,15 +23,11 @@ export async function GET(
             user: {
               select: { id: true, name: true, email: true, image: true },
             },
-            _count: {
-              select: { votes: true },
-            },
+            votes: true,
           },
           orderBy: { createdAt: "desc" },
         },
-        _count: {
-          select: { answers: true, votes: true },
-        },
+        votes: true,
       },
     })
 
@@ -40,7 +38,27 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(question)
+    const userQuestionVote = question.votes.find(v => v.userId === userId)
+    const questionVoteSum = question.votes.reduce((sum, v) => sum + v.value, 0)
+    
+    const answersWithVotes = question.answers.map(answer => {
+      const userAnswerVote = answer.votes.find(v => v.userId === userId)
+      const answerVoteSum = answer.votes.reduce((sum, v) => sum + v.value, 0)
+      return {
+        ...answer,
+        voteSum: answerVoteSum,
+        userVoteValue: userAnswerVote?.value || null,
+        votes: undefined, // remove raw votes array from response
+      }
+    })
+
+    return NextResponse.json({
+      ...question,
+      questionVoteSum,
+      userQuestionVote: userQuestionVote?.value || null,
+      answers: answersWithVotes,
+      votes: undefined, // remove raw votes array from response
+    })
   } catch (error) {
     console.error("Error fetching question:", error)
     return NextResponse.json(

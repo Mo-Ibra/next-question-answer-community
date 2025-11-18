@@ -26,16 +26,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if user already voted
-    const existingVote = await prisma.vote.findUnique({
-      where: {
-        userId_questionId_answerId: {
+    let existingVote;
+
+    if (questionId && !answerId) {
+      // Question vote
+      existingVote = await prisma.vote.findFirst({
+        where: {
           userId: session.user.id,
-          questionId: questionId || null,
-          answerId: answerId || null,
+          questionId: questionId,
+          answerId: null,
         },
-      },
-    });
+      });
+    } else if (answerId && !questionId) {
+      // Answer vote
+      existingVote = await prisma.vote.findFirst({
+        where: {
+          userId: session.user.id,
+          answerId: answerId,
+          questionId: null,
+        },
+      });
+    }
 
     if (existingVote) {
       if (existingVote.value === value) {
