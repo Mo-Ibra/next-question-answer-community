@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 
+// POST: Create a new answer
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -31,6 +32,7 @@ export async function POST(
       where: { id },
     })
 
+    // Check if question exists
     if (!question) {
       return NextResponse.json(
         { error: "Question not found" },
@@ -38,6 +40,7 @@ export async function POST(
       )
     }
 
+    // Create answer
     const answer = await prisma.answer.create({
       data: {
         content: content.trim(),

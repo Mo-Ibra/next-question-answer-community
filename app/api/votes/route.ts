@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
 
     let existingVote;
 
+    // Check if vote already exists
     if (questionId && !answerId) {
       // Question vote
       existingVote = await prisma.vote.findFirst({
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Update existing vote
     if (existingVote) {
       if (existingVote.value === value) {
         // Remove vote if same value (unvote)
@@ -65,7 +67,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Create new vote
+    // Create new vote if no existing vote
     const vote = await prisma.vote.create({
       data: {
         userId: session.user.id,
