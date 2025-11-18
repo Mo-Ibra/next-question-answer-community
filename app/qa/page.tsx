@@ -2,13 +2,15 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { QuestionList } from "@/components/qa/question-list";
+import Navbar from "@/components/navbar";
 
 export default async function QAPage() {
   const session = await auth();
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <Navbar />
+      <div className="max-w-7xl container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Questions & Answers</h1>

@@ -58,7 +58,7 @@ export function QuestionList() {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {questions.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           No questions yet. Be the first to ask!
@@ -66,7 +66,7 @@ export function QuestionList() {
       ) : (
         questions.map((question) => (
           <Link key={question.id} href={`/qa/${question.id}`}>
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer my-4">
               <CardHeader>
                 <CardTitle className="line-clamp-2">{question.title}</CardTitle>
               </CardHeader>

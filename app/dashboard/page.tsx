@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UserNav } from "@/components/dashboard/user-nav";
 import EmailVerified from "@/components/dashboard/email-verified";
 import Image from "next/image";
+import Navbar from "@/components/navbar";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -35,13 +35,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <UserNav user={session.user} />
-        </div>
-      </header>
-
+      <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid gap-6">
           <Card>
