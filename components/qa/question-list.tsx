@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Question {
   id: string;
@@ -37,7 +38,23 @@ export function QuestionList() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-8">Loading questions...</div>;
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="p-4">
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-5/6" />
+              <div className="flex gap-3 pt-2">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-5 w-16" />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   return (
